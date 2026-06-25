@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="styles.css?v=2" />
+  </head>
+  <body>
+    <main class="app" aria-labelledby="app-title">
+      <header class="topbar">
+        <div class="brand-mark" aria-hidden="true">
+          <span>X</span>
+          <span>O</span>
+          <span>O</span>
+          <span>X</span>
+        </div>
+        <div class="brand-copy">
+          <h1 id="app-title">Tic Tac Toe</h1>
+          <p>Frontend Engineer Challenge</p>
+        </div>
+        <button class="theme-button" id="theme-button" type="button" aria-label="Toggle theme">
+          <span aria-hidden="true">☼</span>
+          <span id="theme-label">Light</span>
+        </button>
+      </header>
+
+      <section class="setup-view" id="setup-view" aria-labelledby="setup-title">
+        <div class="setup-card">
+          <p class="eyebrow">Setup Game</p>
+          <h2 id="setup-title">Choose your players</h2>
+          <p class="setup-copy">Masukkan nama pemain, lalu mulai ronde pertama. Player X selalu mendapat giliran pertama.</p>
+
+          <form class="setup-form" id="setup-form">
+            <label class="player-field">
+              <span>Player X</span>
+              <input id="setup-player-x" type="text" value="Urfan" maxlength="18" autocomplete="off" />
+            </label>
+            <label class="player-field">
+              <span>Player O</span>
+              <input id="setup-player-o" type="text" value="Guest" maxlength="18" autocomplete="off" />
+            </label>
+            <button class="primary-button" type="submit">Start Game</button>
+          </form>
+        </div>
+
+        <aside class="setup-preview" aria-label="Board preview">
+          <div class="preview-board" aria-hidden="true">
+            <span>X</span>
+            <span>O</span>
+            <span>X</span>
+            <span></span>
+            <span>X</span>
+            <span>O</span>
+            <span>O</span>
+            <span></span>
+            <span></span>
+          </div>
+        </aside>
+      </section>
+
+      <section class="game-view is-hidden" id="game-view" aria-label="Game board">
+        <aside class="left-column">
+          <section class="panel game-status" aria-live="polite">
+            <p class="panel-label">Game Status</p>
+            <div class="status-content">
+              <div class="status-symbol" id="status-symbol">X</div>
+              <div>
+                <p class="turn-label" id="turn-label">Player X's turn</p>
+                <p class="result-label" id="result-label">Make your move!</p>
+                <p class="player-meta" id="player-meta">Player X: Urfan • Player O: Guest</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel scoreboard">
+            <p class="panel-label">Scoreboard</p>
+            <div class="score-grid">
+              <div>
+                <span class="score-icon score-x">X</span>
+                <p id="score-x-name">Urfan (X)</p>
+                <strong id="score-x">0</strong>
+              </div>
+              <div>
+                <span class="score-icon score-o">O</span>
+                <p id="score-o-name">Guest (O)</p>
+                <strong id="score-o">0</strong>
+              </div>
+              <div>
+                <span class="score-icon score-draw">-</span>
+                <p>Draws</p>
+                <strong id="score-draw">0</strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel actions-panel">
+            <p class="panel-label">Actions</p>
+            <button class="primary-button" id="reset-button" type="button">↻ Restart Game</button>
+            <button class="secondary-button" id="new-round-button" type="button">↻ New Round</button>
+            <button class="secondary-button" id="undo-button" type="button">Undo Move</button>
+          </section>
+        </aside>
+
+        <section class="board-panel">
+          <section class="board" id="board" aria-label="Tic Tac Toe board">
+            <button class="cell" type="button" data-index="0" aria-label="Row 1 column 1"></button>
+            <button class="cell" type="button" data-index="1" aria-label="Row 1 column 2"></button>
+            <button class="cell" type="button" data-index="2" aria-label="Row 1 column 3"></button>
+            <button class="cell" type="button" data-index="3" aria-label="Row 2 column 1"></button>
+            <button class="cell" type="button" data-index="4" aria-label="Row 2 column 2"></button>
+            <button class="cell" type="button" data-index="5" aria-label="Row 2 column 3"></button>
+            <button class="cell" type="button" data-index="6" aria-label="Row 3 column 1"></button>
+            <button class="cell" type="button" data-index="7" aria-label="Row 3 column 2"></button>
+            <button class="cell" type="button" data-index="8" aria-label="Row 3 column 3"></button>
+          </section>
+
+          <div class="legend" aria-label="Player legend">
+            <span><b class="score-x">X</b> Player X (<span id="legend-x">Urfan</span>)</span>
+            <span><b class="score-o">O</b> Player O (<span id="legend-o">Guest</span>)</span>
+          </div>
+        </section>
+
+        <aside class="panel history-panel">
+          <div class="history-heading">
+            <p class="panel-label">Move History</p>
+            <button class="ghost-button" id="clear-score-button" type="button">Clear Score</button>
+          </div>
+          <ol id="history-list" class="history-list"></ol>
+          <p id="empty-history" class="empty-history">No moves yet.</p>
+          <button class="secondary-button full-history-button" type="button">☰ View Full History</button>
+        </aside>
+      </section>
+
+      <footer class="info-strip">
+        <div>
+          <strong>Keyboard Shortcuts</strong>
+          <span>Use 1-9 to select a position • R to restart • N for new round</span>
+        </div>
+        <div>
+          <strong>How to Play</strong>
+          <span>Get three of your marks in a row horizontally, vertically, or diagonally.</span>
+        </div>
+      </footer>
+    </main>
+
+    <dialog class="finish-modal" id="finish-modal" aria-labelledby="modal-title">
+      <div class="modal-content">
+        <h2 id="modal-title">Game Finished</h2>
+        <p id="modal-message"></p>
+        <button class="primary-button" id="play-again-button" type="button">New Round</button>
+      </div>
+    </dialog>
+
+    <script src="main.js?v=2"></script>
+  </body>
+</html>
