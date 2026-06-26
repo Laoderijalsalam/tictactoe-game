@@ -55,7 +55,6 @@ button {
 .panel,
 .board-panel,
 .setup-card,
-.setup-preview,
 .info-strip,
 .finish-modal {
   background: var(--panel);
@@ -281,8 +280,34 @@ h1 {
   background: var(--blue);
 }
 
+.mode-icon--player svg {
+  width: 36px;
+  height: 36px;
+  fill: #fff;
+}
+
+.mode-icon--player path {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
 .mode-icon--computer {
-  background: var(--red);
+  background: transparent;
+}
+
+.mode-icon img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.mode-icon--computer img {
+  width: 128%;
+  height: 128%;
+  max-width: none;
+  transform: translateY(-7px);
 }
 
 .setup-form {
@@ -327,7 +352,12 @@ h1 {
 .input-icon {
   display: grid;
   place-items: center;
-  font-size: 1.1rem;
+}
+
+.input-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
 }
 
 .input-icon--x {
@@ -783,7 +813,9 @@ h1 {
 
 .info-strip div {
   display: grid;
-  gap: 4px;
+  grid-template-columns: 34px minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: center;
   padding-left: 18px;
 }
 
@@ -791,11 +823,29 @@ h1 {
   border-left: 1px solid var(--line);
 }
 
-.info-strip strong {
+.info-icon {
+  width: 28px;
+  height: 28px;
+  color: var(--muted);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.info-copy {
+  min-width: 0;
+}
+
+.info-copy strong {
+  display: block;
+  margin-bottom: 2px;
   font-size: 0.78rem;
 }
 
-.info-strip span {
+.info-copy span {
+  display: block;
   font-size: 0.72rem;
 }
 
@@ -895,6 +945,7 @@ h1 {
   }
 
   .info-strip div {
+    grid-template-columns: 32px minmax(0, 1fr);
     padding-left: 0;
   }
 

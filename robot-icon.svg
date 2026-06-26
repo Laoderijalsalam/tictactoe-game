@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Robot Icon</title>
+  <desc id="desc">Red circular icon with a white robot face symbol.</desc>
+  <defs>
+    <radialGradient id="redGlow" cx="39%" cy="31%" r="70%">
+      <stop offset="0%" stop-color="#ff7068"/>
+      <stop offset="58%" stop-color="#ff4040"/>
+      <stop offset="100%" stop-color="#ee282f"/>
+    </radialGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity=".12"/>
+    </filter>
+  </defs>
+
+  <circle cx="64" cy="64" r="50" fill="url(#redGlow)" filter="url(#softShadow)"/>
+
+  <g fill="#ffffff">
+    <rect x="42" y="53" width="44" height="33" rx="8"/>
+    <rect x="60" y="40" width="8" height="13" rx="4"/>
+    <circle cx="64" cy="38" r="4"/>
+    <rect x="35" y="63" width="8" height="14" rx="4"/>
+    <rect x="85" y="63" width="8" height="14" rx="4"/>
+  </g>
+
+  <g fill="#ff4040">
+    <circle cx="55" cy="67" r="4"/>
+    <circle cx="73" cy="67" r="4"/>
+    <rect x="56" y="77" width="16" height="4" rx="2"/>
+  </g>
+</svg>
