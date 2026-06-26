@@ -52,7 +52,7 @@ let scores = {
 };
 let players = {
   X: 'Salam',
-  O: 'Urfan',
+  O: 'Salam',
 };
 
 function getPlayerName(symbol) {
