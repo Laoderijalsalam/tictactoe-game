@@ -51,8 +51,8 @@ let scores = {
   draw: 0,
 };
 let players = {
-  X: 'Urfan',
-  O: 'Guest',
+  X: 'Salam',
+  O: 'Urfan',
 };
 
 function getPlayerName(symbol) {
