@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tic Tac Toe</title>
-    <link rel="stylesheet" href="styles.css?v=3" />
+    <link rel="stylesheet" href="styles.css?v=2" />
   </head>
   <body>
     <main class="app" aria-labelledby="app-title">
@@ -26,108 +26,37 @@
       </header>
 
       <section class="setup-view" id="setup-view" aria-labelledby="setup-title">
-        <form class="setup-card setup-card--wide" id="setup-form">
-          <section class="setup-step" aria-labelledby="mode-title">
-            <div class="step-heading">
-              <span class="step-number">1</span>
-              <div>
-                <h2 id="mode-title">Select Game Mode</h2>
-                <p>Choose how you want to play.</p>
-              </div>
-            </div>
+        <div class="setup-card">
+          <p class="eyebrow">Setup Game</p>
+          <h2 id="setup-title">Choose your players</h2>
+          <p class="setup-copy">Masukkan nama pemain, lalu mulai ronde pertama. Player X selalu mendapat giliran pertama.</p>
 
-            <div class="mode-grid" role="radiogroup" aria-label="Game mode">
-              <button class="mode-card is-selected" type="button" data-mode="player" aria-pressed="true">
-                <span class="mode-icon mode-icon--player" aria-hidden="true">●●</span>
-                <span>
-                  <strong>Player vs Player</strong>
-                  <small>Play locally with a friend.</small>
-                </span>
-                <b aria-hidden="true">✓</b>
-              </button>
-              <button class="mode-card" type="button" data-mode="computer" aria-pressed="false">
-                <span class="mode-icon mode-icon--computer" aria-hidden="true">▣</span>
-                <span>
-                  <strong>Player vs Computer</strong>
-                  <small>Play against the computer.</small>
-                </span>
-                <b aria-hidden="true">✓</b>
-              </button>
-            </div>
-          </section>
+          <form class="setup-form" id="setup-form">
+            <label class="player-field">
+              <span>Player X</span>
+              <input id="setup-player-x" type="text" value="Salam" maxlength="18" autocomplete="off" />
+            </label>
+            <label class="player-field">
+              <span>Player O</span>
+              <input id="setup-player-o" type="text" value="Salam" maxlength="18" autocomplete="off" />
+            </label>
+            <button class="primary-button" type="submit">Start Game</button>
+          </form>
+        </div>
 
-          <section class="setup-step setup-step--players" aria-labelledby="setup-title">
-            <div class="player-setup">
-              <div class="step-heading">
-                <span class="step-number">2</span>
-                <div>
-                  <h2 id="setup-title">Player Setup</h2>
-                  <p>Enter player names and review symbols.</p>
-                </div>
-              </div>
-
-              <div class="setup-form">
-                <label class="player-field">
-                  <span>Player X Name</span>
-                  <div class="input-shell">
-                    <span class="input-icon input-icon--x" aria-hidden="true">♟</span>
-                    <input id="setup-player-x" type="text" value="Salam" maxlength="18" autocomplete="off" />
-                  </div>
-                </label>
-                <label class="player-field">
-                  <span>Player O Name</span>
-                  <div class="input-shell">
-                    <span class="input-icon input-icon--o" aria-hidden="true">♟</span>
-                    <input id="setup-player-o" type="text" value="Salam" maxlength="18" autocomplete="off" />
-                  </div>
-                </label>
-              </div>
-
-              <section class="symbol-summary" aria-label="Symbol summary">
-                <h3>Symbol Summary</h3>
-                <div class="symbol-row">
-                  <div class="symbol-item">
-                    <span class="symbol-box symbol-box--x" aria-hidden="true">X</span>
-                    <span>
-                      <strong>Player X</strong>
-                      <small>Uses X (Blue)</small>
-                    </span>
-                  </div>
-                  <div class="symbol-item">
-                    <span class="symbol-box symbol-box--o" aria-hidden="true">O</span>
-                    <span>
-                      <strong>Player O</strong>
-                      <small>Uses O (Red)</small>
-                    </span>
-                  </div>
-                </div>
-              </section>
-            </div>
-
-            <aside class="setup-preview" aria-label="Board preview">
-              <h3>Board Preview</h3>
-              <p>The game board.</p>
-              <div class="preview-board" aria-hidden="true">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-            </aside>
-          </section>
-
-          <div class="setup-actions">
-            <button class="primary-button" type="submit">▷ Start Game</button>
-            <button class="secondary-button" id="setup-reset-button" type="button">↻ Reset</button>
+        <aside class="setup-preview" aria-label="Board preview">
+          <div class="preview-board" aria-hidden="true">
+            <span>X</span>
+            <span>O</span>
+            <span>X</span>
+            <span></span>
+            <span>X</span>
+            <span>O</span>
+            <span>O</span>
+            <span></span>
+            <span></span>
           </div>
-        </form>
-
-        <p class="setup-note"><span aria-hidden="true">i</span> Choose a game mode and set player names before starting.</p>
+        </aside>
       </section>
 
       <section class="game-view is-hidden" id="game-view" aria-label="Game board">
@@ -223,6 +152,6 @@
       </div>
     </dialog>
 
-    <script src="main.js?v=3"></script>
+    <script src="main.js?v=2"></script>
   </body>
 </html>
