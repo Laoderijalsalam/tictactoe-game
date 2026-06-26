@@ -14,6 +14,8 @@ const gameView = document.querySelector('#game-view');
 const setupForm = document.querySelector('#setup-form');
 const setupPlayerX = document.querySelector('#setup-player-x');
 const setupPlayerO = document.querySelector('#setup-player-o');
+const setupResetButton = document.querySelector('#setup-reset-button');
+const modeCards = Array.from(document.querySelectorAll('.mode-card'));
 const themeButton = document.querySelector('#theme-button');
 const themeLabel = document.querySelector('#theme-label');
 
@@ -54,6 +56,7 @@ let players = {
   X: 'Salam',
   O: 'Salam',
 };
+let selectedMode = 'player';
 
 function getPlayerName(symbol) {
   return players[symbol] || `Player ${symbol}`;
@@ -102,6 +105,21 @@ function startGame(event) {
   setupView.classList.add('is-hidden');
   gameView.classList.remove('is-hidden');
   render();
+}
+
+function selectMode(card) {
+  selectedMode = card.dataset.mode;
+  modeCards.forEach((modeCard) => {
+    const isSelected = modeCard === card;
+    modeCard.classList.toggle('is-selected', isSelected);
+    modeCard.setAttribute('aria-pressed', String(isSelected));
+  });
+}
+
+function resetSetup() {
+  setupPlayerX.value = 'Salam';
+  setupPlayerO.value = 'Salam';
+  selectMode(modeCards[0]);
 }
 
 function getMovePosition(index) {
@@ -312,6 +330,8 @@ function handleKeyboard(event) {
 }
 
 setupForm.addEventListener('submit', startGame);
+setupResetButton.addEventListener('click', resetSetup);
+modeCards.forEach((card) => card.addEventListener('click', () => selectMode(card)));
 boardElement.addEventListener('click', handleCellClick);
 resetButton.addEventListener('click', restartGame);
 newRoundButton.addEventListener('click', newRound);
