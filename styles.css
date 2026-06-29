@@ -55,8 +55,7 @@ button {
 .panel,
 .board-panel,
 .setup-card,
-.info-strip,
-.finish-modal {
+.info-strip {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 10px;
@@ -109,8 +108,7 @@ h1 {
 .setup-copy,
 .panel-label,
 .player-meta,
-.empty-history,
-.info-strip span {
+.empty-history {
   color: var(--muted);
 }
 
@@ -133,6 +131,35 @@ h1 {
   align-items: center;
   gap: 8px;
   padding: 9px 10px;
+}
+
+.exit-game-button {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  background: transparent;
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.exit-game-button[hidden] {
+  display: none;
+}
+
+.exit-game-button:hover {
+  border-color: var(--red);
+  color: var(--red);
+  background: var(--red-soft);
+}
+
+.exit-game-button:focus-visible {
+  outline: 3px solid rgba(18, 103, 255, 0.24);
+  outline-offset: 2px;
 }
 
 .setup-view {
@@ -335,9 +362,39 @@ h1 {
   outline: none;
 }
 
+.player-field input:disabled {
+  cursor: not-allowed;
+  color: var(--muted);
+  background: var(--panel-soft);
+}
+
+.player-field:has(input:disabled) .input-shell {
+  background: var(--panel-soft);
+}
+
 .input-shell:focus-within {
   border-color: var(--blue);
   box-shadow: 0 0 0 4px rgba(18, 103, 255, 0.12);
+}
+
+.player-field input[aria-invalid="true"] {
+  color: var(--red);
+}
+
+.player-field:has(input[aria-invalid="true"]) .input-shell {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(255, 55, 74, 0.12);
+}
+
+.setup-error {
+  margin: 10px 0 0;
+  color: var(--red);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.setup-error[hidden] {
+  display: none;
 }
 
 .input-shell {
@@ -387,6 +444,12 @@ h1 {
   border: 1px solid var(--blue);
   color: var(--blue);
   background: transparent;
+}
+
+.primary-button:disabled,
+.secondary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 
 .symbol-summary {
@@ -548,8 +611,26 @@ h1 {
   align-items: center;
   gap: 14px;
   padding: 14px;
+  border: 1px solid transparent;
   border-radius: 9px;
   background: var(--blue-soft);
+}
+
+.game-status.is-finished .status-content {
+  border-color: rgba(18, 103, 255, 0.42);
+  box-shadow: inset 4px 0 0 var(--blue);
+}
+
+.game-status.is-winner-o .status-content {
+  border-color: rgba(255, 55, 74, 0.42);
+  background: var(--red-soft);
+  box-shadow: inset 4px 0 0 var(--red);
+}
+
+.game-status.is-draw .status-content {
+  border-color: var(--muted);
+  background: var(--panel-soft);
+  box-shadow: inset 4px 0 0 var(--muted);
 }
 
 .status-symbol {
@@ -581,7 +662,25 @@ h1 {
 }
 
 .result-label.is-finished {
-  color: var(--blue);
+  width: fit-content;
+  border-radius: 999px;
+  padding: 4px 8px;
+  color: #fff;
+  background: var(--blue);
+  font-size: 0.72rem;
+}
+
+.game-status.is-finished .turn-label {
+  margin-bottom: 7px;
+  font-size: 1.18rem;
+}
+
+.game-status.is-winner-o .result-label.is-finished {
+  background: var(--red);
+}
+
+.game-status.is-draw .result-label.is-finished {
+  background: var(--muted);
 }
 
 .player-meta {
@@ -659,6 +758,7 @@ h1 {
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, minmax(0, 1fr));
   border: 1px solid var(--line);
   border-radius: 10px;
   overflow: hidden;
@@ -846,32 +946,8 @@ h1 {
 
 .info-copy span {
   display: block;
-  font-size: 0.72rem;
-}
-
-.finish-modal {
-  width: min(420px, calc(100% - 32px));
-  padding: 0;
-  color: var(--ink);
-}
-
-.finish-modal::backdrop {
-  background: rgba(23, 34, 59, 0.48);
-}
-
-.modal-content {
-  padding: 26px;
-  text-align: center;
-}
-
-.modal-content h2 {
-  margin-bottom: 8px;
-}
-
-.modal-content p {
-  margin-bottom: 20px;
   color: var(--muted);
-  font-weight: 800;
+  font-size: 0.72rem;
 }
 
 @media (max-width: 1040px) {
@@ -954,6 +1030,7 @@ h1 {
     border-top: 1px solid var(--line);
     border-left: 0;
   }
+
 }
 
 @media (max-width: 420px) {

@@ -41,9 +41,11 @@ Lalu buka `http://localhost:8000`.
 - Scoreboard untuk kemenangan X, kemenangan O, dan draw.
 - Highlight pada winning line.
 - Input nama pemain.
+- Mode Player vs Computer dengan nama O terkunci dan langkah komputer dipilih secara acak.
 - Game history per langkah.
 - Undo untuk mengembalikan langkah terakhir saat game masih berjalan.
-- Play Again modal saat game selesai.
+- Status akhir menang/draw ditampilkan pada panel Game Status tanpa menutupi board.
+- Tombol New Round aktif hanya setelah game selesai.
 - Keyboard shortcut: angka 1-9 untuk memilih cell, `R` untuk restart, dan `N` untuk ronde baru.
 - Toggle tema light/dark.
 

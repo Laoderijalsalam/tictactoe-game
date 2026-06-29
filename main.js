@@ -11,16 +11,22 @@ const winningCombinations = [
 
 const setupView = document.querySelector('#setup-view');
 const gameView = document.querySelector('#game-view');
+const gameInfoStrip = document.querySelector('#game-info-strip');
 const setupForm = document.querySelector('#setup-form');
 const setupPlayerX = document.querySelector('#setup-player-x');
 const setupPlayerO = document.querySelector('#setup-player-o');
+const setupNameError = document.querySelector('#setup-name-error');
+const playerOFieldLabel = document.querySelector('#player-o-field-label');
+const playerOSummaryLabel = document.querySelector('#player-o-summary-label');
 const setupResetButton = document.querySelector('#setup-reset-button');
 const modeCards = Array.from(document.querySelectorAll('.mode-card'));
 const themeButton = document.querySelector('#theme-button');
 const themeLabel = document.querySelector('#theme-label');
+const exitGameButton = document.querySelector('#exit-game-button');
 
 const boardElement = document.querySelector('#board');
 const cells = Array.from(document.querySelectorAll('.cell'));
+const gameStatus = document.querySelector('.game-status');
 const statusSymbol = document.querySelector('#status-symbol');
 const turnLabel = document.querySelector('#turn-label');
 const resultLabel = document.querySelector('#result-label');
@@ -38,9 +44,6 @@ const scoreO = document.querySelector('#score-o');
 const scoreDraw = document.querySelector('#score-draw');
 const legendX = document.querySelector('#legend-x');
 const legendO = document.querySelector('#legend-o');
-const finishModal = document.querySelector('#finish-modal');
-const modalMessage = document.querySelector('#modal-message');
-const playAgainButton = document.querySelector('#play-again-button');
 
 let board = Array(9).fill('');
 let currentPlayer = 'X';
@@ -57,6 +60,8 @@ let players = {
   O: 'Salam',
 };
 let selectedMode = 'player';
+let humanPlayerOName = setupPlayerO.value;
+let computerMoveTimer = null;
 
 function getPlayerName(symbol) {
   return players[symbol] || `Player ${symbol}`;
@@ -86,15 +91,45 @@ function isBoardFull(currentBoard) {
 }
 
 function resetBoardOnly() {
+  cancelComputerMove();
   board = Array(9).fill('');
   currentPlayer = 'X';
   gameOver = false;
   history = [];
-  closeFinishModal();
+}
+
+function haveMatchingPlayerNames() {
+  const playerXName = setupPlayerX.value.trim().toLocaleLowerCase();
+  const playerOName = setupPlayerO.value.trim().toLocaleLowerCase();
+  return Boolean(playerXName && playerOName && playerXName === playerOName);
+}
+
+function setNameValidationError(hasError) {
+  setupNameError.hidden = !hasError;
+  setupPlayerX.setAttribute('aria-invalid', String(hasError));
+  setupPlayerO.setAttribute('aria-invalid', String(hasError));
+}
+
+function handlePlayerNameInput() {
+  if (selectedMode === 'player') {
+    humanPlayerOName = setupPlayerO.value;
+  }
+
+  if (!setupNameError.hidden && !haveMatchingPlayerNames()) {
+    setNameValidationError(false);
+  }
 }
 
 function startGame(event) {
   event.preventDefault();
+
+  if (haveMatchingPlayerNames()) {
+    setNameValidationError(true);
+    setupPlayerO.focus();
+    return;
+  }
+
+  setNameValidationError(false);
   players = {
     X: setupPlayerX.value.trim() || 'Player X',
     O: setupPlayerO.value.trim() || 'Player O',
@@ -104,11 +139,37 @@ function startGame(event) {
   resetBoardOnly();
   setupView.classList.add('is-hidden');
   gameView.classList.remove('is-hidden');
+  gameInfoStrip.classList.remove('is-hidden');
+  exitGameButton.hidden = false;
   render();
 }
 
+function exitGame() {
+  gameStarted = false;
+  resetBoardOnly();
+  gameView.classList.add('is-hidden');
+  gameInfoStrip.classList.add('is-hidden');
+  setupView.classList.remove('is-hidden');
+  exitGameButton.hidden = true;
+  render();
+  modeCards[0].focus({ preventScroll: true });
+}
+
 function selectMode(card) {
-  selectedMode = card.dataset.mode;
+  const nextMode = card.dataset.mode;
+
+  if (selectedMode === 'player' && nextMode === 'computer') {
+    humanPlayerOName = setupPlayerO.value;
+  }
+
+  selectedMode = nextMode;
+  const isComputerMode = selectedMode === 'computer';
+  setupPlayerO.disabled = isComputerMode;
+  setupPlayerO.value = isComputerMode ? 'Computer O' : humanPlayerOName;
+  playerOFieldLabel.textContent = isComputerMode ? 'Computer O Name' : 'Player O Name';
+  playerOSummaryLabel.textContent = isComputerMode ? 'Computer O' : 'Player O';
+  setNameValidationError(false);
+
   modeCards.forEach((modeCard) => {
     const isSelected = modeCard === card;
     modeCard.classList.toggle('is-selected', isSelected);
@@ -118,7 +179,8 @@ function selectMode(card) {
 
 function resetSetup() {
   setupPlayerX.value = 'Salam';
-  setupPlayerO.value = 'Salam';
+  humanPlayerOName = 'Player O';
+  setNameValidationError(false);
   selectMode(modeCards[0]);
 }
 
@@ -131,11 +193,12 @@ function getMovePosition(index) {
 function updateBoard() {
   const winnerInfo = calculateWinner(board);
   const winningLine = winnerInfo ? winnerInfo.line : [];
+  const isComputerTurn = selectedMode === 'computer' && currentPlayer === 'O';
 
   cells.forEach((cell, index) => {
     const symbol = board[index];
     cell.textContent = symbol;
-    cell.disabled = !gameStarted || gameOver || Boolean(symbol);
+    cell.disabled = !gameStarted || gameOver || isComputerTurn || Boolean(symbol);
     cell.classList.toggle('is-x', symbol === 'X');
     cell.classList.toggle('is-o', symbol === 'O');
     cell.classList.toggle('is-winning', winningLine.includes(index));
@@ -145,30 +208,37 @@ function updateBoard() {
 
 function updateStatus() {
   const winnerInfo = calculateWinner(board);
+  const isDraw = gameOver && !winnerInfo && isBoardFull(board);
 
   statusSymbol.textContent = currentPlayer;
   statusSymbol.classList.toggle('is-o', currentPlayer === 'O');
   playerMeta.textContent = `Player X: ${getPlayerName('X')} • Player O: ${getPlayerName('O')}`;
   resultLabel.classList.toggle('is-finished', gameOver);
+  gameStatus.classList.toggle('is-finished', gameOver);
+  gameStatus.classList.toggle('is-win', Boolean(winnerInfo));
+  gameStatus.classList.toggle('is-winner-o', winnerInfo?.winner === 'O');
+  gameStatus.classList.toggle('is-draw', isDraw);
 
   if (winnerInfo) {
     statusSymbol.textContent = winnerInfo.winner;
     statusSymbol.classList.toggle('is-o', winnerInfo.winner === 'O');
-    turnLabel.textContent = `${getPlayerName(winnerInfo.winner)} wins`;
-    resultLabel.textContent = `Winner: Player ${winnerInfo.winner}`;
+    turnLabel.textContent = `${getPlayerName(winnerInfo.winner)} Wins!`;
+    resultLabel.textContent = `Game finished • Winner: Player ${winnerInfo.winner}`;
     return;
   }
 
-  if (gameOver && isBoardFull(board)) {
+  if (isDraw) {
     statusSymbol.textContent = '-';
     statusSymbol.classList.remove('is-o');
-    turnLabel.textContent = 'Game Draw';
-    resultLabel.textContent = 'No winner this round';
+    turnLabel.textContent = "It's a Draw";
+    resultLabel.textContent = 'Game finished • No winner';
     return;
   }
 
   turnLabel.textContent = `${getPlayerName(currentPlayer)}'s turn`;
-  resultLabel.textContent = 'Make your move!';
+  resultLabel.textContent = selectedMode === 'computer' && currentPlayer === 'O'
+    ? 'Computer is choosing a move...'
+    : 'Make your move!';
 }
 
 function updateScoreboard() {
@@ -212,8 +282,9 @@ function updateHistory() {
   });
 }
 
-function updateUndoButton() {
+function updateActionButtons() {
   undoButton.disabled = gameOver || history.length === 0;
+  newRoundButton.disabled = !gameOver;
 }
 
 function render() {
@@ -221,40 +292,26 @@ function render() {
   updateStatus();
   updateScoreboard();
   updateHistory();
-  updateUndoButton();
-}
-
-function openFinishModal(message) {
-  modalMessage.textContent = message;
-
-  if (typeof finishModal.showModal === 'function') {
-    finishModal.showModal();
-  }
-}
-
-function closeFinishModal() {
-  if (finishModal.open) {
-    finishModal.close();
-  }
+  updateActionButtons();
 }
 
 function finishGame(type, winner = null) {
+  cancelComputerMove();
   gameOver = true;
 
   if (type === 'winner' && winner) {
     scores[winner] += 1;
     render();
-    openFinishModal(`Winner: ${getPlayerName(winner)} (${winner})`);
     return;
   }
 
   scores.draw += 1;
   render();
-  openFinishModal('Game Draw');
 }
 
-function makeMove(index) {
-  if (!gameStarted || gameOver || board[index]) return;
+function makeMove(index, isComputerMove = false) {
+  const isBlockedComputerTurn = selectedMode === 'computer' && currentPlayer === 'O' && !isComputerMove;
+  if (!gameStarted || gameOver || board[index] || isBlockedComputerTurn) return;
 
   board[index] = currentPlayer;
   history.push({
@@ -276,6 +333,35 @@ function makeMove(index) {
 
   currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
   render();
+
+  if (selectedMode === 'computer' && currentPlayer === 'O') {
+    scheduleComputerMove();
+  }
+}
+
+function cancelComputerMove() {
+  if (computerMoveTimer !== null) {
+    window.clearTimeout(computerMoveTimer);
+    computerMoveTimer = null;
+  }
+}
+
+function scheduleComputerMove() {
+  cancelComputerMove();
+
+  if (!gameStarted || gameOver || selectedMode !== 'computer' || currentPlayer !== 'O') return;
+
+  computerMoveTimer = window.setTimeout(() => {
+    computerMoveTimer = null;
+    const availableCells = board
+      .map((symbol, index) => (symbol ? null : index))
+      .filter((index) => index !== null);
+
+    if (availableCells.length === 0) return;
+
+    const randomIndex = Math.floor(Math.random() * availableCells.length);
+    makeMove(availableCells[randomIndex], true);
+  }, 450);
 }
 
 function handleCellClick(event) {
@@ -296,6 +382,21 @@ function restartGame() {
 
 function undoMove() {
   if (gameOver || history.length === 0) return;
+
+  cancelComputerMove();
+
+  if (selectedMode === 'computer') {
+    if (history.at(-1)?.player === 'O') {
+      const computerMove = history.pop();
+      board[computerMove.cellIndex] = '';
+    }
+
+    const playerMove = history.pop();
+    if (playerMove) board[playerMove.cellIndex] = '';
+    currentPlayer = 'X';
+    render();
+    return;
+  }
 
   const lastMove = history.pop();
   board[lastMove.cellIndex] = '';
@@ -325,26 +426,22 @@ function handleKeyboard(event) {
   }
 
   if (event.key.toLowerCase() === 'n') {
-    newRound();
+    if (gameOver) newRound();
   }
 }
 
 setupForm.addEventListener('submit', startGame);
+setupPlayerX.addEventListener('input', handlePlayerNameInput);
+setupPlayerO.addEventListener('input', handlePlayerNameInput);
 setupResetButton.addEventListener('click', resetSetup);
 modeCards.forEach((card) => card.addEventListener('click', () => selectMode(card)));
 boardElement.addEventListener('click', handleCellClick);
 resetButton.addEventListener('click', restartGame);
 newRoundButton.addEventListener('click', newRound);
-playAgainButton.addEventListener('click', newRound);
 undoButton.addEventListener('click', undoMove);
 clearScoreButton.addEventListener('click', clearScoreboard);
 themeButton.addEventListener('click', toggleTheme);
+exitGameButton.addEventListener('click', exitGame);
 document.addEventListener('keydown', handleKeyboard);
-
-finishModal.addEventListener('click', (event) => {
-  if (event.target === finishModal) {
-    closeFinishModal();
-  }
-});
 
 render();

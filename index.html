@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tic Tac Toe</title>
-    <link rel="stylesheet" href="styles.css?v=6" />
+    <link rel="stylesheet" href="styles.css?v=9" />
   </head>
   <body>
     <main class="app" aria-labelledby="app-title">
@@ -22,6 +22,9 @@
         <button class="theme-button" id="theme-button" type="button" aria-label="Toggle theme">
           <span aria-hidden="true">☼</span>
           <span id="theme-label">Light</span>
+        </button>
+        <button class="exit-game-button" id="exit-game-button" type="button" aria-label="Exit game and return to game setup" hidden>
+          <span aria-hidden="true">×</span>
         </button>
       </header>
 
@@ -85,11 +88,11 @@
                         <path d="M5 20c.8-4.5 3.4-7 7-7s6.2 2.5 7 7"></path>
                       </svg>
                     </span>
-                    <input id="setup-player-x" type="text" value="Salam" maxlength="18" autocomplete="off" />
+                    <input id="setup-player-x" type="text" value="Salam" maxlength="18" autocomplete="off" aria-describedby="setup-name-error" />
                   </div>
                 </label>
                 <label class="player-field">
-                  <span>Player O Name</span>
+                  <span id="player-o-field-label">Player O Name</span>
                   <div class="input-shell">
                     <span class="input-icon input-icon--o" aria-hidden="true">
                       <svg viewBox="0 0 24 24">
@@ -97,10 +100,12 @@
                         <path d="M5 20c.8-4.5 3.4-7 7-7s6.2 2.5 7 7"></path>
                       </svg>
                     </span>
-                    <input id="setup-player-o" type="text" value="Salam" maxlength="18" autocomplete="off" />
+                    <input id="setup-player-o" type="text" value="Player O" maxlength="18" autocomplete="off" aria-describedby="setup-name-error" />
                   </div>
                 </label>
               </div>
+
+              <p class="setup-error" id="setup-name-error" role="alert" hidden>Player X and Player O must use different names.</p>
 
               <section class="symbol-summary" aria-label="Symbol summary">
                 <h3>Symbol Summary</h3>
@@ -115,7 +120,7 @@
                   <div class="symbol-item">
                     <span class="symbol-box symbol-box--o" aria-hidden="true">O</span>
                     <span>
-                      <strong>Player O</strong>
+                      <strong id="player-o-summary-label">Player O</strong>
                       <small>Uses O (Red)</small>
                     </span>
                   </div>
@@ -187,7 +192,7 @@
           <section class="panel actions-panel">
             <p class="panel-label">Actions</p>
             <button class="primary-button" id="reset-button" type="button">↻ Restart Game</button>
-            <button class="secondary-button" id="new-round-button" type="button">↻ New Round</button>
+            <button class="secondary-button" id="new-round-button" type="button" disabled>↻ New Round</button>
             <button class="secondary-button" id="undo-button" type="button">Undo Move</button>
           </section>
         </aside>
@@ -222,7 +227,7 @@
         </aside>
       </section>
 
-      <footer class="info-strip">
+      <footer class="info-strip is-hidden" id="game-info-strip">
         <div>
           <svg class="info-icon" viewBox="0 0 24 24" aria-hidden="true">
             <rect x="3" y="5" width="18" height="14" rx="2"></rect>
@@ -244,16 +249,9 @@
           </span>
         </div>
       </footer>
+
     </main>
 
-    <dialog class="finish-modal" id="finish-modal" aria-labelledby="modal-title">
-      <div class="modal-content">
-        <h2 id="modal-title">Game Finished</h2>
-        <p id="modal-message"></p>
-        <button class="primary-button" id="play-again-button" type="button">New Round</button>
-      </div>
-    </dialog>
-
-    <script src="main.js?v=3"></script>
+    <script src="main.js?v=8"></script>
   </body>
 </html>
