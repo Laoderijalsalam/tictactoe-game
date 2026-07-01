@@ -750,6 +750,7 @@ h1 {
 .board-panel {
   display: grid;
   align-content: center;
+  align-self: start;
 }
 
 .board {

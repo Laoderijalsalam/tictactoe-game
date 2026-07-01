@@ -165,9 +165,9 @@ function selectMode(card) {
   selectedMode = nextMode;
   const isComputerMode = selectedMode === 'computer';
   setupPlayerO.disabled = isComputerMode;
-  setupPlayerO.value = isComputerMode ? 'Computer O' : humanPlayerOName;
-  playerOFieldLabel.textContent = isComputerMode ? 'Computer O Name' : 'Player O Name';
-  playerOSummaryLabel.textContent = isComputerMode ? 'Computer O' : 'Player O';
+  setupPlayerO.value = isComputerMode ? 'Computer' : humanPlayerOName;
+  playerOFieldLabel.textContent = isComputerMode ? 'Computer X Name' : 'Player O Name';
+  playerOSummaryLabel.textContent = isComputerMode ? 'Computer' : 'Player O';
   setNameValidationError(false);
 
   modeCards.forEach((modeCard) => {
@@ -237,7 +237,7 @@ function updateStatus() {
 
   turnLabel.textContent = `${getPlayerName(currentPlayer)}'s turn`;
   resultLabel.textContent = selectedMode === 'computer' && currentPlayer === 'O'
-    ? 'Computer is choosing a move...'
+    ? 'Computer is moving...'
     : 'Make your move!';
 }
 
